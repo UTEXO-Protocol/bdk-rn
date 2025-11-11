@@ -18,17 +18,32 @@ Using docs at https://jhugman.github.io/uniffi-bindgen-react-native/guides/rn/ge
 To build the library and start testing locally, you must have:
 
 - The [Rust](https://rust-lang.org/) toolchain installed on your machine
+- Set the default Rust toolchain to `1.90.0` (currently Rust stable)
 - The [just](https://github.com/casey/just) cli tool
-- Initiate the submodule (`just submodule-init`)
+- Initiated the submodule (`just submodule-init`)
+- Installed your Rust compilation targets
 
 ## Building the library and running the examples
 
 ```shell
+# Clone the repo and install prerequisites
 git clone git@github.com:bitcoindevkit/bdk-react-native.git
 cargo install cargo-ndk
 yarn install
 
+# Install compilation targets, for example:
+rustup target add aarch64-linux-android aarch64-apple-ios aarch64-apple-ios-sim
+
+# Build the library
 just rename-library
 just build-android
-yarn example android
+
+# Start an Android emulator and run the example app
+yarn example start    # In terminal 1
+yarn example android  # In terminal 2
 ```
+
+## Notes
+
+1. The `cargo-ndk` library removed the `--no-strip` argument and this is creating a build error when using the latest release of `uniffi-bindgen-react-native` (`0.29.3-1`). We are currently building using a commit on their `main` branch which contains the patch. See the `package.json` file.
+2. For some reason the example app doesn't work on my Pixel 8 API 35 emulator, but does work on the Pixel 5 API 31 and the Pixel 9 API 36. If you get a red banner at the top of the app when launching saying `Unable to load script... ` and asking you to start Metro, try the example in a different emulator!
