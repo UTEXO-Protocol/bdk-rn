@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, useColorScheme, View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View, Text, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
@@ -39,15 +39,16 @@ function AppContent() {
   const [testResults, setTestResults] = useState<TestResults | null>(null);
   const [running, setRunning] = useState(true);
 
-  useEffect(() => {
-    const runTests = async () => {
-      setRunning(true);
-      const results = await runAllTests();
-      setTestResults(results);
-      setRunning(false);
-    };
+  const handleRunTests = async () => {
+    setTestResults(null);
+    setRunning(true);
+    const results = await runAllTests();
+    setTestResults(results);
+    setRunning(false);
+  };
 
-    runTests();
+  useEffect(() => {
+    handleRunTests();
   }, []);
 
   if (running) {
@@ -81,6 +82,15 @@ function AppContent() {
             {testResults.passed ? '✓ PASSED' : '✗ FAILED'}
           </Text>
         </View>
+        <Pressable
+          onPress={handleRunTests}
+          style={[styles.button, running && styles.buttonDisabled]}
+          disabled={running}
+        >
+          <Text style={styles.buttonText}>
+            {running ? 'Running Tests...' : 'Run Tests Again'}
+          </Text>
+        </Pressable>
       </View>
 
       {testResults.summary && (
@@ -141,7 +151,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   headerContainer: {
-    padding: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
@@ -243,6 +255,22 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     color: '#666',
+  },
+  button: {
+    backgroundColor: '#0066cc',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 });
 

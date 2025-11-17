@@ -93,6 +93,11 @@ class TestRunner {
     };
   }
 
+  reset() {
+    this.suites = [];
+    this.currentSuite = null;
+  }
+
   getSummary() {
     let totalTests = 0;
     let passedTests = 0;

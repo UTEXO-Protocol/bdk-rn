@@ -10,6 +10,9 @@ import { runWalletTests } from './wallet.test';
 export async function runAllTests() {
   console.log('\n🧪 Starting BDK Integration Tests...\n');
 
+  // Reset test runner state before running tests
+  testRunner.reset();
+
   try {
     // Run all test suites
     runMnemonicTests();
