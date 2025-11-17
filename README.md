@@ -47,7 +47,7 @@ yarn example android  # In terminal 2
 
 ## Running the IntegrationTestingApp
 
-The `IntegrationTestingApp/` directory contains a standalone test app that uses the library as a tarball dependency (similar to how end-users would consume it). This app is **not** part of the workspace and is completely decoupled from the library development.
+The `IntegrationTestingApp/` directory contains a standalone test app that uses the library as a tarball dependency (similar to how end-users would consume it). This app is **not** part of the workspace and is completely decoupled from the library development. You can use the following workflow to run the tests locally on an Android emulator, or to develop features on the library by first making changes to the local `bdk-ffi` repository, and then running through the workflow with new/modified tests.
 
 ```shell
 # First, build and package the library
@@ -57,30 +57,13 @@ npm pack  # Creates bdk-rn-0.1.0.tgz
 # Install dependencies in the IntegrationTestingApp
 cd IntegrationTestingApp
 npm install
+npm install ../bdk-rn-0.1.0-next.tgz
+
+# To see tests results in your shell, run this prior to starting the app
+adb logcat -c && adb logcat -s ReactNativeJS | tee tests.log
 
 # Run the app
 npm run android  # or npm run ios
-
-# See tests results in the emulator or capture the logs from your shell
-adb logcat -s ReactNativeJS | tee tests.log
-```
-
-## Workflow for testing library changes
-
-When you make changes to the `bdk-rn` library and want to test them in the IntegrationTestingApp:
-
-```shell
-# Make local changes to the Rust code in bdk-ffi/bdk-ffi/src/
-
-# Recompile the libary
-just build-android
-
-# Build the tarball
-npm pack  # Creates updated bdk-rn-0.1.0.tgz
-
-# Reinstall in IntegrationTestingApp
-cd IntegrationTestingApp
-npm install ../bdk-rn-0.1.0.tgz
 ```
 
 ## Notes

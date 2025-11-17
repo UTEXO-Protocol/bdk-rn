@@ -3,7 +3,7 @@
 ## Run The Tests
 
 ```shell
-npm install
+npm install ../bdk-rn-0.1.0-next.tgz
 
 # Terminal 1: start metro
 npx react-native start
