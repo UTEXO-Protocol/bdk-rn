@@ -6,6 +6,9 @@
 import { testRunner } from './testRunner';
 import { runMnemonicTests } from './mnemonic.test';
 import { runWalletTests } from './wallet.test';
+import { runDescriptorTests } from './descriptor.test';
+import { runCreatingWalletTests } from './creatingWallet.test';
+import { runPersistenceTests } from './persistence.test';
 
 export async function runAllTests() {
   console.log('\n🧪 Starting BDK Integration Tests...\n');
@@ -16,7 +19,13 @@ export async function runAllTests() {
   try {
     // Run all test suites
     runMnemonicTests();
+    runDescriptorTests();
+    runCreatingWalletTests();
     runWalletTests();
+    runPersistenceTests();
+
+    // Wait for all async tests to complete
+    await testRunner.waitForAsyncTests();
 
     // Print summary
     const passed = testRunner.printSummary();

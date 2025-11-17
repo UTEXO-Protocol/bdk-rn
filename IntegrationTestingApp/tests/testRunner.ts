@@ -18,6 +18,7 @@ export interface TestSuite {
 class TestRunner {
   private suites: TestSuite[] = [];
   private currentSuite: TestSuite | null = null;
+  private pendingPromises: Promise<void>[] = [];
 
   describe(suiteName: string, fn: () => void) {
     console.log(`\n[TEST SUITE] ${suiteName}`);
@@ -31,7 +32,7 @@ class TestRunner {
     }
   }
 
-  it(testName: string, fn: () => void) {
+  it(testName: string, fn: () => void | Promise<void>) {
     if (!this.currentSuite) {
       throw new Error('Test must be inside a describe block');
     }
@@ -44,10 +45,31 @@ class TestRunner {
 
     try {
       console.log(`[TEST START] ${testName}`);
-      fn();
-      result.status = 'pass';
-      result.duration = Date.now() - startTime;
-      console.log(`[TEST PASS] ${testName} (${result.duration}ms)`);
+      const maybePromise = fn();
+
+      // Check if the function returned a promise (async test)
+      if (maybePromise && typeof maybePromise.then === 'function') {
+        const promise = maybePromise
+          .then(() => {
+            result.status = 'pass';
+            result.duration = Date.now() - startTime;
+            console.log(`[TEST PASS] ${testName} (${result.duration}ms)`);
+          })
+          .catch((error) => {
+            result.status = 'fail';
+            result.duration = Date.now() - startTime;
+            result.error = error instanceof Error ? error.message : String(error);
+            console.error(`[TEST FAIL] ${testName}: ${result.error}`);
+          });
+
+        // Track this promise so we can wait for it
+        this.pendingPromises.push(promise);
+      } else {
+        // Synchronous test
+        result.status = 'pass';
+        result.duration = Date.now() - startTime;
+        console.log(`[TEST PASS] ${testName} (${result.duration}ms)`);
+      }
     } catch (error) {
       result.status = 'fail';
       result.duration = Date.now() - startTime;
@@ -56,6 +78,13 @@ class TestRunner {
     }
 
     this.currentSuite.tests.push(result);
+  }
+
+  async waitForAsyncTests() {
+    if (this.pendingPromises.length > 0) {
+      await Promise.all(this.pendingPromises);
+      this.pendingPromises = [];
+    }
   }
 
   expect(value: any) {
@@ -96,6 +125,7 @@ class TestRunner {
   reset() {
     this.suites = [];
     this.currentSuite = null;
+    this.pendingPromises = [];
   }
 
   getSummary() {

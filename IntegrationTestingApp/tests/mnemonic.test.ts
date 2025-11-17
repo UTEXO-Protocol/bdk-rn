@@ -6,7 +6,14 @@
  * - Test to run on Android emulator or device
  */
 
-import { Mnemonic, WordCount } from 'bdk-rn';
+import {
+  Mnemonic,
+  WordCount,
+  DescriptorSecretKey,
+  Descriptor,
+  Network,
+  KeychainKind,
+} from 'bdk-rn';
 import { describe, it, expect } from './testRunner';
 
 export function runMnemonicTests() {
@@ -54,6 +61,27 @@ export function runMnemonicTests() {
       expect(() => {
         Mnemonic.fromString(invalidMnemonic);
       }).toThrow();
+    });
+
+    // Ported from androidTest: Mnemonics create valid descriptors.
+    it('should create valid descriptors from mnemonics', () => {
+      const mnemonic = Mnemonic.fromString(
+        'space echo position wrist orient erupt relief museum myself grain wisdom tumble'
+      );
+      const descriptorSecretKey = new DescriptorSecretKey(
+        Network.Testnet,
+        mnemonic,
+        undefined
+      );
+      const descriptor = Descriptor.newBip86(
+        descriptorSecretKey,
+        KeychainKind.External,
+        Network.Testnet
+      );
+
+      expect(descriptor.toString()).toBe(
+        'tr([be1eec8f/86\'/1\'/0\']tpubDCTtszwSxPx3tATqDrsSyqScPNnUChwQAVAkanuDUCJQESGBbkt68nXXKRDifYSDbeMa2Xg2euKbXaU3YphvGWftDE7ozRKPriT6vAo3xsc/0/*)#m7puekcx'
+      );
     });
   });
 }

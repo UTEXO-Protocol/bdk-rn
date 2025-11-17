@@ -14,6 +14,7 @@
     "bdk-rn": "file:../bdk-rn-0.1.0-next.tgz",
     "react": "19.1.1",
     "react-native": "0.82.1",
+    "react-native-fs": "^2.20.0",
     "react-native-safe-area-context": "^5.5.2"
   },
   "devDependencies": {
