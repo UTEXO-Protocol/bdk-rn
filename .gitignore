@@ -90,7 +90,6 @@ target/
 libbdkffi.a
 
 # Other
-NOTES.md
 temp/
 
 # npm pack tarball
