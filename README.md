@@ -13,29 +13,22 @@ The core Rust code that is exposed to the React Native language bindings actuall
 
 ## Exploring the Example Apps
 
-To take a look at the API exposed in this library, you can run our example applications. [Read the docs on this here](https://bitcoindevkit.github.io/bdk-rn/example-apps/).
+To take a look at the API exposed in this library, you can run our example applications. [Read the docs on this here](https://bitcoindevkit.github.io/bdk-rn/example-apps/), and [find our example apps here](https://github.com/thunderbiscuit/bdk-rn-example-apps).
 
-## Notes for developers
+<br>
 
-See the docs at https://jhugman.github.io/uniffi-bindgen-react-native/guides/rn/getting-started.html for more advanced information on how to build this library.
+## Building the Library and Running the Tests
 
-To build the library and start testing locally, you must have:
+Take a look at [our docs here](https://bitcoindevkit.github.io/bdk-rn/) for more complete information on building, testing, CI, releases, etc.
 
-- The [Rust](https://rust-lang.org/) toolchain installed on your machine
-- Set the default Rust toolchain to `1.90.0` (currently Rust stable)
-- The [just](https://github.com/casey/just) cli tool
-- Initiated the submodule (`just submodule-init`)
-- Installed your Rust compilation targets
+You can easily build the library from source for quick development and iteration with only a few prerequisites:
 
-## Building the library from source
-
-If you need to modify the library or build from source, you must have the Rust toolchain installed:
-
-**Prerequisites:**
-- Rust toolchain (stable 1.90.0+)
+- Rust toolchain (stable 1.91.1)
 - `just` CLI tool: https://github.com/casey/just
-- `cargo-ndk`: `cargo install cargo-ndk`
-- For iOS: CocoaPods >= 1.13: `brew install cocoapods`
+- `cargo-ndk` (`cargo install cargo-ndk`)
+- For iOS: CocoaPods >= 1.13: ()`brew install cocoapods`)
+
+### Build Instructions
 
 ```shell
 # Clone the repo and install prerequisites
@@ -47,43 +40,40 @@ rustup target add aarch64-linux-android aarch64-apple-ios aarch64-apple-ios-sim
 
 # Build the library and create tarball (includes both Android and iOS)
 just rename-library
-just build-tarball  # Builds both platforms and creates bdk-rn-VERSION.tgz
-
-# Install in the example app
-cd example
-npm install
-# The package.json already references the tarball from the parent directory
-
-# For iOS, also install pods
-cd ios && pod install && cd ..
-
-# Start the example app
-npm run start     # In terminal 1
-npm run android   # In terminal 2 (or npm run ios for iOS)
+# Build both platforms and creates bdk-rn-VERSION.tgz
+just build-tarball
 ```
 
-## Running the IntegrationTestingApp
+### Running the Test Suite
 
-The `IntegrationTestingApp/` directory contains a standalone test app that uses the library as a tarball dependency (similar to how end-users would consume it). This app is **not** part of the workspace and is completely decoupled from the library development. You can use the following workflow to run the tests locally on an Android emulator, or to develop features on the library by first making changes to the local `bdk-ffi` repository, and then running through the workflow with new/modified tests.
+The `IntegrationTestingApp/` directory contains a standalone test app that uses the library as a tarball dependency (similar to how end-users would consume it). This app is **not** part of the workspace and is completely decoupled from the library development.
+
+You can use the following workflow to run the tests locally on an Android emulator, or to develop features on the library by first making changes to the local `bdk-ffi` repository and then running through the workflow with new/modified tests.
 
 ```shell
-# First, build and package the library
+# Build and package the library
 just build-android
-npm pack  # Creates bdk-rn-0.1.0.tgz
+
+# Create the tarball bdk-rn-<version>-next.tgz
+npm pack
 
 # Install dependencies in the IntegrationTestingApp
 cd IntegrationTestingApp
+
+# Make sure your package.json file references the ../bdk-rn-<version>-next.tgz
 npm install
-npm install ../bdk-rn-0.1.0-next.tgz
 
 # To see tests results in your shell, run this prior to starting the app
 adb logcat -c && adb logcat -s ReactNativeJS | tee tests.log
 
 # Run the app
-npm run android  # or npm run ios
+npm run android
 ```
 
-## Notes
+### Test Development Workflow
 
-1. The `cargo-ndk` library removed the `--no-strip` argument and this is creating a build error when using the latest release of `uniffi-bindgen-react-native` (`0.29.3-1`). We are currently building using a commit on their `main` branch which contains the patch. See the `package.json` file.
-2. For some reason the example app doesn't work on my Pixel 8 API 35 emulator, but does work on the Pixel 5 API 31 and the Pixel 9 API 36. If you get a red banner at the top of the app when launching saying `Unable to load script... ` and asking you to start Metro, try the example in a different emulator!
+1. Make changes to `bdk-ffi` or the library code
+2. Build and package: `just build-android && npm pack`
+3. Update IntegrationTestingApp: `cd IntegrationTestingApp && npm install`
+4. Add or modify tests in the IntegrationTestingApp
+5. Run the app and verify test results in logcat or in the emulator
