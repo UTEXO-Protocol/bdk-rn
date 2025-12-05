@@ -6,7 +6,7 @@ React Native language bindings for the [Bitcoin Development Kit](https://bitcoin
 
 The code in this repository is mostly comprised of:
 
-- Build tools and workflows
+- Build tools
 - CI workflows
 - Tests
 - Docs

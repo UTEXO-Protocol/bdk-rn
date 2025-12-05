@@ -22,8 +22,7 @@ theme:
 nav:
   - Overview: index.md
   - Example Apps: example-apps.md
-  - Development: development.md
-  - Testing: testing.md
+  - Build: build.md
   - Notes: notes.md
 
 markdown_extensions:
