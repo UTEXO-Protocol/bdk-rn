@@ -1,8 +1,8 @@
 # Running the Example Apps
 
 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-  <img src="/bdk-rn/assets/images/ios.png" alt="Screenshot 1" style="flex: 1; min-width: 300px; height: auto;">
-  <img src="/bdk-rn/assets/images/android.png" alt="Screenshot 2" style="flex: 1; min-width: 300px; height: auto;">
+  <img src="../assets/images/ios.png" alt="Screenshot 1" style="flex: 1; min-width: 300px; height: auto;">
+  <img src="../assets/images/android.png" alt="Screenshot 2" style="flex: 1; min-width: 300px; height: auto;">
 </div>
 
 <br>

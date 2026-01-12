@@ -89,6 +89,8 @@ temp/
 # tests
 tests.log
 
-
 # Generated xcframework
 BdkRnFramework.xcframework
+
+NOTES.md
+site/
