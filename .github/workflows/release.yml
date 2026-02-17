@@ -4,9 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Semver version or increment (e.g. 2.2.0, 2.3.0-alpha.1, patch, minor, major)'
+        description: 'Semver version (e.g. 2.3.0, 2.3.0-alpha.1)'
         required: true
         type: string
+      title:
+        description: 'Release title (e.g. v2.3.0 Alpha 1). Leave empty to use tag name.'
+        required: false
+        type: string
+      body:
+        description: 'Release description'
+        required: false
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
       dry-run:
         description: 'Dry run (no actual release)'
         required: false
@@ -15,7 +28,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       contents: write
     steps:
@@ -23,14 +36,56 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+          submodules: true
 
-      - name: Setup
-        uses: ./.github/actions/setup
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install Node dependencies
+        run: yarn install --immutable
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: aarch64-linux-android,aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk
+
+      - name: Setup Java
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
+
+      - name: Install Android NDK
+        run: sdkmanager --install "ndk;27.0.12077973"
+
+      - name: Rename library
+        run: |
+          sed -i '' '/^\[package\]/,/^\[/ s/^name *= *".*"/name = "bdkffi"/' bdk-ffi/bdk-ffi/Cargo.toml
 
       - name: Configure Git
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Build Android
+        run: yarn ubrn:android --config ubrn.config.yaml
+        env:
+          ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.12077973
+
+      - name: Build iOS
+        run: yarn ubrn:ios --config ubrn.config.yaml
+
+      - name: Create tarball
+        run: npm pack
 
       - name: Bump version and create tag
         run: |
@@ -47,9 +102,35 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           TAG="v${VERSION}"
-          gh release create "${TAG}" \
-            --title "${TAG}" \
-            --generate-notes \
-            --target master
+          TARBALL=$(ls bdk-rn-*.tgz 2>/dev/null || true)
+
+          # Build release arguments
+          ARGS=("${TAG}" --target master)
+
+          # Title
+          if [ -n "${{ inputs.title }}" ]; then
+            ARGS+=(--title "${{ inputs.title }}")
+          else
+            ARGS+=(--title "${TAG}")
+          fi
+
+          # Body
+          if [ -n "${{ inputs.body }}" ]; then
+            ARGS+=(--notes "${{ inputs.body }}")
+          else
+            ARGS+=(--generate-notes)
+          fi
+
+          # Pre-release flag
+          if [ "${{ inputs.prerelease }}" = "true" ]; then
+            ARGS+=(--prerelease)
+          fi
+
+          # Attach tarball
+          if [ -n "${TARBALL}" ]; then
+            ARGS+=("${TARBALL}")
+          fi
+
+          gh release create "${ARGS[@]}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
