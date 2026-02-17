@@ -23,21 +23,7 @@ runs:
 
     - name: Install dependencies
       if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: |
-        # Yarn Berry's WASM libgit2 doesn't support core.autocrlf.
-        # Nuclear option: nuke system gitconfig and strip autocrlf from all configs.
-        sudo rm -f /etc/gitconfig
-        # Preserve safe.directory but remove everything else problematic
-        SAFE_DIRS=$(git config --global --get-all safe.directory 2>/dev/null || true)
-        sed -i '/autocrlf/d' ~/.gitconfig 2>/dev/null || true
-        sed -i '/autocrlf/d' .git/config 2>/dev/null || true
-        # Debug
-        echo "--- All git config ---"
-        git config --list --show-origin 2>/dev/null || true
-        echo "----------------------"
-        yarn install --immutable
-      env:
-        GIT_CONFIG_NOSYSTEM: "1"
+      run: yarn install --immutable
       shell: bash
 
     - name: Cache dependencies
