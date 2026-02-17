@@ -6,7 +6,9 @@ runs:
   steps:
     - name: Fix git config for Yarn Berry
       run: |
-        git config --system --unset-all core.autocrlf 2>/dev/null || true
+        # Yarn Berry's libgit2 chokes on core.autocrlf; remove it from all config files
+        sudo sed -i '/autocrlf/d' /etc/gitconfig 2>/dev/null || true
+        sed -i '/autocrlf/d' ~/.gitconfig 2>/dev/null || true
         git config --global --unset-all core.autocrlf 2>/dev/null || true
         git config --local --unset-all core.autocrlf 2>/dev/null || true
       shell: bash
