@@ -3,8 +3,8 @@ site_name = "BDK React Native Documentation"
 site_description = "React Native language bindings for the Bitcoin Development Kit."
 docs_dir = "docs"
 
-repo_url = "https://github.com/bitcoindevkit/bdk-rn"
-repo_name = "bitcoindevkit/bdk-rn"
+repo_url = "https://github.com/UTEXO-Protocol/bdk-rn"
+repo_name = "UTEXO-Protocol/bdk-rn"
 
 # The site_author attribute. This is used in the HTML head element.
 #

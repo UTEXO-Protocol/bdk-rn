@@ -51,14 +51,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitcoindevkit/bdk-rn"
+    "url": "https://github.com/UTEXO-Protocol/bdk-rn"
   },
-  "author": "Bitcoin Dev Kit Developers <dev@bitcoindevkit.org> (https://bitcoindevkit.org/)",
+  "author": "UTEXO Protocol <https://github.com/UTEXO-Protocol>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bitcoindevkit/bdk-rn/issues"
+    "url": "https://github.com/UTEXO-Protocol/bdk-rn/issues"
   },
-  "homepage": "https://github.com/bitcoindevkit/bdk-rn/",
+  "homepage": "https://github.com/UTEXO-Protocol/bdk-rn/",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -123,7 +123,7 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": true
+      "publish": false
     },
     "github": {
       "release": true

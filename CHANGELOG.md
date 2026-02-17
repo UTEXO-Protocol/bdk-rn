@@ -1,3 +1,3 @@
 # Changelog
 
-Changelog information can be found in the bdk-ffi repository: https://github.com/bitcoindevkit/bdk-ffi/blob/master/CHANGELOG.md
+Changelog information for the underlying bdk-ffi can be found here: https://github.com/bitcoindevkit/bdk-ffi/blob/master/CHANGELOG.md

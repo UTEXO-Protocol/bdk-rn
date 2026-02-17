@@ -1,6 +1,6 @@
 # Bitcoin Dev Kit — React Native
 
-React Native language bindings for the [Bitcoin Development Kit](https://bitcoindevkit.org/). Read our [documentation for this library here](https://bitcoindevkit.github.io/bdk-rn/).
+React Native language bindings for the [Bitcoin Development Kit](https://bitcoindevkit.org/). Read our [documentation for this library here](https://UTEXO-Protocol.github.io/bdk-rn/).
 
 The code in this repository is mostly comprised of:
 
@@ -13,13 +13,13 @@ The core Rust code that is exposed to the React Native language bindings actuall
 
 ## Exploring the Example Apps
 
-To take a look at the API exposed in this library, you can run our example applications. [Read the docs on this here](https://bitcoindevkit.github.io/bdk-rn/example-apps/), and [find our example apps here](https://github.com/thunderbiscuit/bdk-rn-example-apps).
+To take a look at the API exposed in this library, you can run our example applications. [Read the docs on this here](https://UTEXO-Protocol.github.io/bdk-rn/example-apps/), and [find our example apps here](https://github.com/UTEXO-Protocol/bdk-rn-example-apps).
 
 <br>
 
 ## Building the Library and Running the Tests
 
-Take a look at [our docs here](https://bitcoindevkit.github.io/bdk-rn/) for more complete information on building, testing, CI, releases, etc.
+Take a look at [our docs here](https://UTEXO-Protocol.github.io/bdk-rn/) for more complete information on building, testing, CI, releases, etc.
 
 You can easily build the library from source for quick development and iteration with only a few prerequisites:
 
@@ -32,7 +32,7 @@ You can easily build the library from source for quick development and iteration
 
 ```shell
 # Clone the repo and install prerequisites
-git clone git@github.com:bitcoindevkit/bdk-rn.git
+git clone git@github.com:UTEXO-Protocol/bdk-rn.git
 cd bdk-rn
 
 # Install compilation targets

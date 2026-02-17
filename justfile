@@ -6,7 +6,7 @@
 [group("Repo")]
 [doc("Open repo on GitHub in your default browser.")]
 repo:
-  open https://github.com/thunderbiscuit/bdk-rn
+  open https://github.com/UTEXO-Protocol/bdk-rn
 
 [group("Repo")]
 [doc("Remove all build files.")]

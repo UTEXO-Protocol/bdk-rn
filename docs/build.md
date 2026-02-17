@@ -11,7 +11,7 @@ You can easily build the library from source for quick development and iteration
 
 ```shell
 # Clone the repo and install prerequisites
-git clone git@github.com:bitcoindevkit/bdk-rn.git
+git clone git@github.com:UTEXO-Protocol/bdk-rn.git
 cd bdk-rn
 
 # Install compilation targets
