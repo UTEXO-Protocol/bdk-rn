@@ -90,9 +90,9 @@ jobs:
       - name: Bump version and create tag
         run: |
           if [ "${{ inputs.dry-run }}" = "true" ]; then
-            npx release-it "${{ inputs.version }}" --ci --dry-run --no-github
+            npx release-it "${{ inputs.version }}" --ci --dry-run --no-github --no-git.requireCleanWorkingDir
           else
-            npx release-it "${{ inputs.version }}" --ci --no-github
+            npx release-it "${{ inputs.version }}" --ci --no-github --no-git.requireCleanWorkingDir
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
