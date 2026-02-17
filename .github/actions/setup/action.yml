@@ -4,15 +4,6 @@ description: Setup Node.js and install dependencies
 runs:
   using: composite
   steps:
-    - name: Fix git config for Yarn Berry
-      run: |
-        # Yarn Berry's libgit2 chokes on core.autocrlf; remove it from all config files
-        sudo sed -i '/autocrlf/d' /etc/gitconfig 2>/dev/null || true
-        sed -i '/autocrlf/d' ~/.gitconfig 2>/dev/null || true
-        git config --global --unset-all core.autocrlf 2>/dev/null || true
-        git config --local --unset-all core.autocrlf 2>/dev/null || true
-      shell: bash
-
     - name: Setup Node.js
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
@@ -32,7 +23,18 @@ runs:
 
     - name: Install dependencies
       if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn install --immutable
+      run: |
+        # Yarn Berry's libgit2 chokes on core.autocrlf — purge it right before install
+        sudo sed -i '/autocrlf/d' /etc/gitconfig 2>/dev/null || true
+        sed -i '/autocrlf/d' ~/.gitconfig 2>/dev/null || true
+        sed -i '/autocrlf/d' .git/config 2>/dev/null || true
+        # Debug: verify no autocrlf remains
+        echo "--- git config check ---"
+        git config --list --show-origin | grep -i autocrlf || echo "OK: no autocrlf in git config"
+        echo "------------------------"
+        yarn install --immutable
+      env:
+        GIT_CONFIG_NOSYSTEM: "1"
       shell: bash
 
     - name: Cache dependencies
