@@ -5,7 +5,10 @@ runs:
   using: composite
   steps:
     - name: Fix git config for Yarn Berry
-      run: git config --global --unset core.autocrlf || true
+      run: |
+        git config --system --unset-all core.autocrlf 2>/dev/null || true
+        git config --global --unset-all core.autocrlf 2>/dev/null || true
+        git config --local --unset-all core.autocrlf 2>/dev/null || true
       shell: bash
 
     - name: Setup Node.js
